@@ -1,5 +1,6 @@
 import torch
 
+
 def get_configuration():
     return {
         'BATCH_SIZE': 128,
@@ -8,5 +9,12 @@ def get_configuration():
         'EPOCHS': 50,
         'SEQUENCE_LENGTH': 8,
         'DEVICE': 'cuda' if torch.cuda.is_available() else 'cpu',
-        'BYTES_QUANTITY': 256
+        'BYTES_QUANTITY': 256,
+
+        # ---- split / output settings ----
+        'SEED': 42,
+        'TRAIN_RATIO': 0.70,
+        'VAL_RATIO': 0.15,
+        'TEST_RATIO': 0.15,
+        'OUTPUT_DIR': 'outputs',
     }

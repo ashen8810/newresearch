@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import os
-from tqdm import tqdm
+
 from loguru import logger as log
 from encoder import ENCODER_FACTORY
 from os import mkdir, listdir
@@ -65,7 +65,8 @@ def main():
         # Generate texts
         encoder = enc_factory()
 
-        for i in tqdm(range(QUANTITY), desc=f"{enc_name}", unit="item"):
+        for i in range(QUANTITY):
+            log.info(f"  [{enc_name}] Generating {i + 1}/{QUANTITY} item...")
             text = TEXTS[i]
 
             key_id = i // UPDATE_IV_AND_KEY_EVERY

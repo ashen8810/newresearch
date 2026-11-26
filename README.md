@@ -217,3 +217,40 @@ For questions or issues, please open an issue on GitHub or contact:
 ---
 
 **Note:** This research demonstrates that proper key management (frequent key rotation) is essential for maintaining cipher security. The results validate cryptographic best practices rather than reveal vulnerabilities in modern block ciphers.
+
+## 🔀 Train / Validation / Test Split and Outputs (modified version)
+
+Both scenarios now use a **70 / 15 / 15** train / val / test split (ratios and seed in `config.py`).
+Splits live in `splits.py`:
+
+- **Scenario A (key reuse):** stratified random split over samples (same keys in all subsets).
+- **Scenario B (key-disjoint):** split over key ids; no key is shared between train, val and test (asserted at runtime).
+
+The best checkpoint is chosen by **lowest validation loss**; the test set is used once, for the final numbers.
+
+```bash
+./datagen.py
+./train_scenario_a.py      # optional: --seed 42 --epochs 50
+./train_scenario_b.py
+./summarize.py             # combined table + comparison figure
+```
+
+Everything for the paper is written to `outputs/`:
+
+```
+outputs/
+├── scenario_a/ , scenario_b/
+│   ├── config.json, split_summary.json, split_manifest.json, train.log
+│   ├── history.csv, results.json (train/val/test metrics)
+│   ├── accuracy_curve_*.png/pdf, loss_curve_*.png/pdf
+│   ├── confusion_counts_test_*.png/pdf, confusion_normalized_test_*.png/pdf, confusion_matrix_test_*.csv
+│   ├── per_class_f1_test_*.png/pdf
+│   ├── classification_report_{val,test}.csv/.tex
+│   ├── predictions_{val,test}.npz, model_best.pth
+└── summary/
+    ├── results_summary.csv/.tex/.json
+    └── scenario_comparison_test_accuracy.png/pdf
+```
+
+`plot_accuracy.py` and `plot_confusion.py` re-draw figures from the saved outputs.
+Metrics: accuracy (95% Wilson CI), balanced accuracy, macro precision/recall/F1, MCC, Cohen's kappa, top-3 accuracy, macro ROC-AUC.
